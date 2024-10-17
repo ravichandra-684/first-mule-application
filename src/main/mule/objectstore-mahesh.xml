@@ -16,6 +16,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 			</scheduling-strategy>
 		</scheduler>
 		<logger level="INFO" doc:name="Logger" doc:id="498f5400-42b6-4276-ae00-a65ad50dbdb9" message="testing"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d3b9dea9-488e-4065-9159-45be39f2c1e2" message="#[payload]"/>
 		<os:retrieve doc:name="empId" doc:id="133eef35-973f-4dd7-9342-bd893f226b5f" key="empId" objectStore="Object_store" target="empId">
 			<os:default-value ><![CDATA[99]]></os:default-value>
 		</os:retrieve>
