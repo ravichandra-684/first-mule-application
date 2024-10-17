@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="7c559923-61ca-4b0a-8693-5718214df816" entryTtl="1" entryTtlUnit="MINUTES" expirationIntervalUnit="SECONDS"/>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="1e37035f-2436-4ef4-83a9-0a2de8b50f43" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Root1234@" database="mule" />
+	</db:config>
+	<flow name="objectstore-maheshFlow" doc:id="8a648f02-09e0-4b60-b885-abdb35f587f1" >
+		<scheduler doc:name="Scheduler" doc:id="090ede48-a067-4d66-99e8-83e930ca376e" >
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" doc:name="Logger" doc:id="498f5400-42b6-4276-ae00-a65ad50dbdb9" message="testing"/>
+		<os:retrieve doc:name="empId" doc:id="133eef35-973f-4dd7-9342-bd893f226b5f" key="empId" objectStore="Object_store" target="empId">
+			<os:default-value ><![CDATA[99]]></os:default-value>
+		</os:retrieve>
+		<logger level="INFO" doc:name="Logger" doc:id="f9497396-8950-46c1-b17c-8b03fe882531" message="#[vars.empId]"/>
+		<db:select doc:name="Select" doc:id="d8d58909-0394-4333-aa76-88f98de4a74e" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from student where stu_id>:stu_id]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{ stu_id: vars.empId}]]]></db:input-parameters>
+		</db:select>
+		<os:store doc:name="Store" doc:id="1de20b94-303c-4dd4-9d40-4787bf691053" key="empId" objectStore="Object_store">
+			<os:value ><![CDATA[#[max(payload.stu_id)]]]></os:value>
+		</os:store>
+	</flow>
+</mule>
